@@ -10,6 +10,14 @@ $ source venv/bin/activate
 $ pip install -r requirements.txt
 ```
 
+## Qdrant の初期化
+
+`documents` ディレクトリに `sample.pdf` を配置してから、以下のコマンドを実行する。
+
+```sh
+$ OPENAI_API_KEY="<your-secret-key>" python refresh.py
+```
+
 ## サーバーの起動
 
 ```sh
