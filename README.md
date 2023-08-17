@@ -29,10 +29,11 @@ $ OPENAI_API_KEY="<your-secret-key>" rye run flask --app main run --reload
 ```sh
 $ http POST localhost:5000/chat message=pizza
 HTTP/1.1 200 OK
+Connection: close
 content-length: 97
 content-type: application/json
 date: Thu, 17 Aug 2023 07:08:53 GMT
-server: uvicorn
+Werkzeug/2.3.7 Python/3.11.3
 
 {
     "answer": "Why did the tomato turn red?\n\nBecause it saw the salad dressing!",
