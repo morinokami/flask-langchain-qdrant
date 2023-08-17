@@ -9,4 +9,5 @@ wheels/
 # venv
 venv
 
+documents/*.pdf
 qdrant_data/
