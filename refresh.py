@@ -1,46 +1,39 @@
-from qdrant_client import QdrantClient
-from qdrant_client.models import Distance, VectorParams
+import os
+import shutil
 from langchain.vectorstores import Qdrant
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from pypdf import PdfReader
 
+QDRANT_PATH = "./qdrant_data"
+COLLECTION_NAME = "my_collection"
+SAMPLE_PDF_PATH = "./documents/sample.pdf"
+
 def split(text: str):
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-        # model_name=,
+        model_name="gpt-3.5-turbo",
         chunk_size=250,
         chunk_overlap=0,
     )
     return splitter.split_text(text)
 
 def extract_text(pdf_path: str):
-    reader = PdfReader("./documents/sample.pdf")
+    reader = PdfReader(pdf_path)
     return '\n\n'.join([page.extract_text() for page in reader.pages])
 
-def load_qdrant():
-    client = QdrantClient(path="./qdrant_data")
-
-    try:
-        client.get_collection("my_collection")
-    except:
-        client.create_collection(
-            collection_name="my_collection",
-            vectors_config=VectorParams(size=1536, distance=Distance.COSINE),
-        )
-        print("Collection created")
-
-    return Qdrant(
-        client=client,
-        collection_name="my_collection",
-        embeddings=OpenAIEmbeddings(),
-    )
-
 def main():
-    text = extract_text("./documents/sample.pdf")
+    if os.path.exists(QDRANT_PATH):
+        shutil.rmtree(QDRANT_PATH)
+
+    text = extract_text(SAMPLE_PDF_PATH)
     split_text = split(text)
     if text:
-        qdrant = load_qdrant()
-        qdrant.add_texts(split_text)
+        Qdrant.from_texts(
+            split_text,
+            OpenAIEmbeddings(),
+            path=QDRANT_PATH,
+            collection_name=COLLECTION_NAME,
+        )
         print("Text added to Qdrant")
 
 if __name__ == "__main__":

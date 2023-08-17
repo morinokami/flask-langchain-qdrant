@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from langchain.chat_models import ChatOpenAI
-from langchain.schema import (
-    SystemMessage,
-    HumanMessage,
-)
+from langchain.chains import RetrievalQA
+from qdrant_client import QdrantClient
+from langchain.vectorstores import Qdrant
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.callbacks import get_openai_callback
 
 app = FastAPI()
 
@@ -14,12 +15,39 @@ class ChatPayload(BaseModel):
 @app.post("/chat")
 async def chat(payload: ChatPayload):
     llm = ChatOpenAI(temperature=0.2)
-    messages = [
-        SystemMessage(content="Tell me something funny."),
-        HumanMessage(content=payload.message)
-    ]
-    response = llm(messages)
-    return {
-        "message": payload.message,
-        "answer": response.content,
-    }
+    qa = build_qa_model(llm)
+    query = payload.message
+    with get_openai_callback() as cb:
+        answer = qa(query)
+        return {
+            "answer": answer["result"],
+            "cost": cb.total_cost,
+        }
+
+def load_qdrant():
+    client = QdrantClient(path="./qdrant_data")
+
+    try:
+        client.get_collection("my_collection")
+    except:
+        raise Exception("Please run refresh.py first")
+
+    return Qdrant(
+        client=client,
+        collection_name="my_collection",
+        embeddings=OpenAIEmbeddings(),
+    )
+
+def build_qa_model(llm):
+    qdrant = load_qdrant()
+    retriever = qdrant.as_retriever(
+        search_type="similarity",
+        search_kwargs={"k":10}
+    )
+    return RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff", 
+        retriever=retriever,
+        return_source_documents=True,
+        verbose=True
+    )
