@@ -30,7 +30,7 @@ def load_qdrant():
 
     try:
         client.get_collection(COLLECTION_NAME)
-    except:
+    except ValueError:
         raise Exception("Please run refresh.py first")
 
     return Qdrant(
@@ -40,7 +40,7 @@ def load_qdrant():
     )
 
 
-def build_qa_model(llm):
+def build_qa_model(llm: ChatOpenAI):
     qdrant = load_qdrant()
     retriever = qdrant.as_retriever(search_type="similarity", search_kwargs={"k": 10})
     return RetrievalQA.from_chain_type(
