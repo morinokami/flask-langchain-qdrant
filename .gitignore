@@ -7,7 +7,7 @@ wheels/
 *.egg-info
 
 # venv
-venv
+.venv
 
 documents/*.pdf
 qdrant_data/

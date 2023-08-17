@@ -7,6 +7,8 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import Qdrant
 from qdrant_client import QdrantClient
 
+from const import QDRANT_PATH, COLLECTION_NAME
+
 app = Flask(__name__)
 
 
@@ -24,16 +26,16 @@ def chat():
 
 
 def load_qdrant():
-    client = QdrantClient(path="./qdrant_data")
+    client = QdrantClient(path=QDRANT_PATH)
 
     try:
-        client.get_collection("my_collection")
+        client.get_collection(COLLECTION_NAME)
     except:
         raise Exception("Please run refresh.py first")
 
     return Qdrant(
         client=client,
-        collection_name="my_collection",
+        collection_name=COLLECTION_NAME,
         embeddings=OpenAIEmbeddings(),
     )
 

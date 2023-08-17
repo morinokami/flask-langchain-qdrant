@@ -6,9 +6,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Qdrant
 from pypdf import PdfReader
 
-QDRANT_PATH = "./qdrant_data"
-COLLECTION_NAME = "my_collection"
-SAMPLE_PDF_PATH = "./documents/sample.pdf"
+from const import QDRANT_PATH, COLLECTION_NAME, SAMPLE_PDF_PATH
 
 
 def split(text: str):
