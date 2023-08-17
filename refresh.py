@@ -1,13 +1,15 @@
 import os
 import shutil
-from langchain.vectorstores import Qdrant
+
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Qdrant
 from pypdf import PdfReader
 
 QDRANT_PATH = "./qdrant_data"
 COLLECTION_NAME = "my_collection"
 SAMPLE_PDF_PATH = "./documents/sample.pdf"
+
 
 def split(text: str):
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
@@ -17,9 +19,11 @@ def split(text: str):
     )
     return splitter.split_text(text)
 
+
 def extract_text(pdf_path: str):
     reader = PdfReader(pdf_path)
-    return '\n\n'.join([page.extract_text() for page in reader.pages])
+    return "\n\n".join([page.extract_text() for page in reader.pages])
+
 
 def main():
     if os.path.exists(QDRANT_PATH):
@@ -35,6 +39,7 @@ def main():
             collection_name=COLLECTION_NAME,
         )
         print("Text added to Qdrant")
+
 
 if __name__ == "__main__":
     main()

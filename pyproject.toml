@@ -12,6 +12,8 @@ dependencies = [
     "qdrant-client>=1.4.0",
     "tiktoken>=0.4.0",
     "flask>=2.3.2",
+    "ruff>=0.0.284",
+    "black>=23.7.0",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
