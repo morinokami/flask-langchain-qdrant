@@ -12,7 +12,7 @@ $ rye sync
 
 ## Qdrant の初期化
 
-`documents` ディレクトリに `sample.pdf` を配置してから、以下のコマンドを実行します。
+`documents` ディレクトリに PDF ファイルを配置してから、以下のコマンドを実行します。
 
 ```sh
 $ OPENAI_API_KEY="<your-secret-key>" python refresh.py
