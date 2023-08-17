@@ -1,13 +1,13 @@
-# fasrapi-langchain-qdrant
+# fastapi-langchain-qdrant
 
 ## 準備
 
+このプロジェクトではパッケージマネージャーとして [Rye](https://rye-up.com/) を使用しています。[Installation](https://rye-up.com/guide/installation/) のページを参考に、まず Rye をインストールしておいてください。
+
 ```sh
-$ python --version
-Python 3.11.4
-$ python -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+$ git clone git@github.com:morinokami/fastapi-langchain-qdrant.git
+$ cd fastapi-langchain-qdrant
+$ rye sync
 ```
 
 ## Qdrant の初期化
@@ -21,13 +21,13 @@ $ OPENAI_API_KEY="<your-secret-key>" python refresh.py
 ## サーバーの起動
 
 ```sh
-$ OPENAI_API_KEY="<your-secret-key>" uvicorn main:app --reload
+$ OPENAI_API_KEY="<your-secret-key>" rye run flask --app main run --reload
 ```
 
 ## メッセージの送信
 
 ```sh
-$ http POST localhost:8000/chat message=pizza
+$ http POST localhost:5000/chat message=pizza
 HTTP/1.1 200 OK
 content-length: 97
 content-type: application/json
@@ -36,6 +36,6 @@ server: uvicorn
 
 {
     "answer": "Why did the tomato turn red?\n\nBecause it saw the salad dressing!",
-    "message": "pizza"
+    "cost": 0.0038385000000000003
 }
 ```

@@ -1,5 +1,5 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from flask import Flask
+from flask import request
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from qdrant_client import QdrantClient
@@ -7,16 +7,13 @@ from langchain.vectorstores import Qdrant
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.callbacks import get_openai_callback
 
-app = FastAPI()
-
-class ChatPayload(BaseModel):
-    message: str
+app = Flask(__name__)
 
 @app.post("/chat")
-async def chat(payload: ChatPayload):
+def chat():
+    query = request.json.get("message")
     llm = ChatOpenAI(temperature=0.2)
     qa = build_qa_model(llm)
-    query = payload.message
     with get_openai_callback() as cb:
         answer = qa(query)
         return {
