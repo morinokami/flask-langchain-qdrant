@@ -1,4 +1,4 @@
-# fastapi-langchain-qdrant
+# flask-langchain-qdrant
 
 ## 準備
 
